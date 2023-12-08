@@ -9,18 +9,13 @@ import pandas as pd
 FEATURES = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']
 FEATURES_OHE = ['Sex', 'Embarked']
 TARGET = 'Survived'
-PATH_DATA = "data/train/titanic.csv"
-PATH_PREPROCESSOR = "models/preprocessor.pkl"
-PATH_MODEL = "models/clf_randomforest.pkl"
-ENCODING_PREDICTION_PROBA = {
-    0: "Probability not to survive",
-    1: "Probability to survive"
-}
-
-ENCODING_PREDICTION = {
+TARGET_LABELS = {
     0: "Not survived",
     1: "Survived"
 }
+PATH_DATA = "data/train/titanic.csv"
+PATH_PREPROCESSOR = "models/preprocessor.pkl"
+PATH_MODEL = "models/clf_randomforest.pkl"
 
 def load_data(path_data=PATH_DATA):
 
@@ -79,22 +74,17 @@ def fit_and_persist_model(X, y, path_model=PATH_MODEL):
     print(f"Model was saved to {path_model}")
 
 
-def load_model_and_predict(X, path_model=PATH_MODEL):
+def predict(X: pd.DataFrame, path_preprocessor=PATH_PREPROCESSOR, path_model=PATH_MODEL):
+
+    X = preprocess_data(X)
 
     with open(path_model, "rb") as file:
         model = load(file)
 
     prediction = model.predict(X)[0]
-    prediction_proba = model.predict_proba(X)[0]
+    prediction_probas = model.predict_proba(X)[0]
 
-    prediction_data = {}
-    for key, value in ENCODING_PREDICTION_PROBA.items():
-        prediction_data.update({value: prediction_proba[key]})
-
-    prediction_df = pd.DataFrame(prediction_data, index=[0])
-    prediction = ENCODING_PREDICTION[prediction]
-
-    return prediction, prediction_df
+    return prediction, prediction_probas
 
 
 if __name__ == "__main__":

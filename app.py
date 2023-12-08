@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from model import load_data, preprocess_data, load_model_and_predict
+from model import predict
 
 
 translation_Sex = {
@@ -20,6 +20,17 @@ translation_Pclass = {
     "2nd": 2,
     "3rd": 3
 }
+
+ENCODING_PREDICTION_PROBA = {
+    0: "Probability not to survive",
+    1: "Probability to survive"
+}
+
+ENCODING_PREDICTION = {
+    0: "Not survived",
+    1: "Survived"
+}
+
 
 def process_main_page():
     show_main_page()
@@ -53,11 +64,19 @@ def write_user_data(df):
 
 
 def write_prediction(prediction, prediction_probas):
+
+    prediction_data = {}
+    for key, value in ENCODING_PREDICTION_PROBA.items():
+        prediction_data.update({value: prediction_probas[key]})
+
+    prediction_df = pd.DataFrame(prediction_data, index=[0])
+    prediction = ENCODING_PREDICTION[prediction]
+
     st.write("## Prediction")
     st.write(prediction)
 
     st.write("## Probability")
-    st.write(prediction_probas)
+    st.write(prediction_df)
 
 
 def preprocess_input(user_input):
@@ -71,6 +90,7 @@ def preprocess_input(user_input):
         "Embarked": translation_Embarked[user_input['embarked']]
     }
 
+    # df = pd.DataFrame.from_dict(data)
     df = pd.DataFrame(data, index=[0])
 
     return df
@@ -83,9 +103,8 @@ def process_side_bar_inputs():
     user_input_df = preprocess_input(user_input)
     write_user_data(user_input_df)
 
-    X_user_input = preprocess_data(user_input_df)
-
-    prediction, prediction_probas = load_model_and_predict(X_user_input)
+    # TODO: use requests library for FastAPI endpoint
+    prediction, prediction_probas = predict(user_input_df)
     write_prediction(prediction, prediction_probas)
 
 
