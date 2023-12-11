@@ -69,6 +69,11 @@ def write_prediction(prediction, prediction_probas):
     for key, value in ENCODING_PREDICTION_PROBA.items():
         prediction_data.update({value: prediction_probas[key]})
 
+    # # If using all scalar values, you must pass an index
+    # # Other method: converting scalars to vectors
+    # for key, value in ENCODING_PREDICTION_PROBA.items():
+    #     prediction_data.update({value: [prediction_probas[key]]})
+    # prediction_df = pd.DataFrame(prediction_data, index=[0])
     prediction_df = pd.DataFrame(prediction_data, index=[0])
     prediction = ENCODING_PREDICTION[prediction]
 
