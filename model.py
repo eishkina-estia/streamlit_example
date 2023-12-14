@@ -1,3 +1,5 @@
+import os
+
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.ensemble import RandomForestClassifier
@@ -35,6 +37,10 @@ def fit_and_persist_preprocessor(X: pd.DataFrame, path_preprocessor=PATH_PREPROC
     column_transformer.fit(X)
     feature_names_out = column_transformer.get_feature_names_out()
 
+    dir = os.path.dirname(path_preprocessor)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
     with open(path_preprocessor, "wb") as file:
         dump((column_transformer, feature_names_out), file)
 
@@ -67,6 +73,10 @@ def fit_and_persist_model(X, y, path_model=PATH_MODEL):
     y_pred_train = model.predict(X)
     accuracy = accuracy_score(y, y_pred_train)
     print(f"Model accuracy on train data is {accuracy:.3f}")
+
+    dir = os.path.dirname(path_model)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
 
     with open(path_model, "wb") as file:
         dump(model, file)
