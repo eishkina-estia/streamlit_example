@@ -1,0 +1,7 @@
+paths:
+  data_path: ./data/train/titanic.csv
+  preprocessor_path: ./models/preprocessor.pkl
+  model_path: ./models/clf_randomforest.pkl
+ml:
+  target_name: Survived
+  target_labels: Not survived;Survived

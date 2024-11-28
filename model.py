@@ -7,17 +7,16 @@ from sklearn.metrics import accuracy_score
 from pickle import dump, load
 import pandas as pd
 
+import common as common
 
 FEATURES = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']
 FEATURES_OHE = ['Sex', 'Embarked']
-TARGET = 'Survived'
-TARGET_LABELS = {
-    0: "Not survived",
-    1: "Survived"
-}
-PATH_DATA = "data/train/titanic.csv"
-PATH_PREPROCESSOR = "models/preprocessor.pkl"
-PATH_MODEL = "models/clf_randomforest.pkl"
+
+TARGET = common.CONFIG['ml']['target_name']
+TARGET_LABELS = common.CONFIG['ml']['target_labels']
+PATH_DATA = common.CONFIG['paths']['data_path']
+PATH_PREPROCESSOR = common.CONFIG['paths']['preprocessor_path']
+PATH_MODEL = common.CONFIG['paths']['model_path']
 
 def load_data(path_data=PATH_DATA):
 
