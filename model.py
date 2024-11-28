@@ -90,7 +90,7 @@ def predict_classes_and_probas(X: pd.DataFrame, path_preprocessor=PATH_PREPROCES
     with open(path_model, "rb") as file:
         model = load(file)
 
-    prediction = model.predict_classes_and_probas(X)[0]
+    prediction = model.predict(X)[0]
     prediction_probas = model.predict_proba(X)[0]
 
     return prediction, prediction_probas
