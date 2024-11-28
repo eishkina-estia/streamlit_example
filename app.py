@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from model import predict
+from model import predict_classes_and_probas as model_predict_classes_and_probas
 
 
 translation_Sex = {
@@ -108,8 +108,8 @@ def process_side_bar_inputs():
     user_input_df = preprocess_input(user_input)
     write_user_data(user_input_df)
 
-    # TODO: use requests library for FastAPI endpoint
-    prediction, prediction_probas = predict(user_input_df)
+    # In hands-on lab, you will need to use requests library for FastAPI endpoint
+    prediction, prediction_probas = model_predict_classes_and_probas(user_input_df)
     write_prediction(prediction, prediction_probas)
 
 

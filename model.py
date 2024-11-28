@@ -83,22 +83,23 @@ def fit_and_persist_model(X, y, path_model=PATH_MODEL):
     print(f"Model was saved to {path_model}")
 
 
-def predict(X: pd.DataFrame, path_preprocessor=PATH_PREPROCESSOR, path_model=PATH_MODEL):
+def predict_classes_and_probas(X: pd.DataFrame, path_preprocessor=PATH_PREPROCESSOR, path_model=PATH_MODEL):
 
     X = preprocess_data(X)
 
     with open(path_model, "rb") as file:
         model = load(file)
 
-    prediction = model.predict(X)[0]
+    prediction = model.predict_classes_and_probas(X)[0]
     prediction_probas = model.predict_proba(X)[0]
 
     return prediction, prediction_probas
 
-
-if __name__ == "__main__":
-
+def launch_training_pipeline():
     X, y = load_data()
     fit_and_persist_preprocessor(X)
     X, y = preprocess_data(X, y)
     fit_and_persist_model(X, y)
+
+if __name__ == "__main__":
+    launch_training_pipeline()
