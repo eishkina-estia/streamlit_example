@@ -4,7 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from pickle import dump, load
+import pickle as pickle
 import pandas as pd
 
 import common as common
@@ -41,7 +41,7 @@ def fit_and_persist_preprocessor(X: pd.DataFrame, path_preprocessor=PATH_PREPROC
         os.makedirs(dir)
 
     with open(path_preprocessor, "wb") as file:
-        dump((column_transformer, feature_names_out), file)
+        pickle.dump((column_transformer, feature_names_out), file)
 
     print(f"Preprocessor was saved to {path_preprocessor}")
 
@@ -49,7 +49,7 @@ def fit_and_persist_preprocessor(X: pd.DataFrame, path_preprocessor=PATH_PREPROC
 def preprocess_data(X: pd.DataFrame, y: pd.Series = None, path_preprocessor=PATH_PREPROCESSOR):
 
     with open(path_preprocessor, "rb") as file:
-        column_transformer, feature_names_transformed = load(file)
+        column_transformer, feature_names_transformed = pickle.load(file)
 
     if y is not None:
         X = X.dropna()
@@ -78,17 +78,17 @@ def fit_and_persist_model(X, y, path_model=PATH_MODEL):
         os.makedirs(dir)
 
     with open(path_model, "wb") as file:
-        dump(model, file)
+        pickle.dump(model, file)
 
     print(f"Model was saved to {path_model}")
 
 
 def predict_classes_and_probas(X: pd.DataFrame, path_preprocessor=PATH_PREPROCESSOR, path_model=PATH_MODEL):
 
-    X = preprocess_data(X)
+    X = preprocess_data(X, path_preprocessor=path_preprocessor)
 
     with open(path_model, "rb") as file:
-        model = load(file)
+        model = pickle.load(file)
 
     prediction = model.predict(X)[0]
     prediction_probas = model.predict_proba(X)[0]
